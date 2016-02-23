@@ -21,14 +21,7 @@
 
 /* Component specific styles */
 
-
-.main-panel {
+#mainPane {
     -fx-background-image: url("../images/background.jpg");
-}
-
-.hello-message {
-    -fx-text-fill: #AA0000;
-    -fx-font-weight: bold;
-    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
 }
 

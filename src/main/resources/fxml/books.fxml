@@ -5,6 +5,31 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 
-<AnchorPane prefHeight="500" prefWidth="500" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.books.controller.BooksSearchController">
-
+<AnchorPane fx:id="mainPane" prefHeight="500" prefWidth="500" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.books.controller.BooksSearchController">
+  <children>
+      <GridPane hgap="5.0" layoutX="25.0" layoutY="25.0" prefHeight="30.0" prefWidth="475.0" vgap="5.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="200.0" />
+          <ColumnConstraints maxWidth="75.0" minWidth="75.0" prefWidth="75.0" />
+          <ColumnConstraints maxWidth="75.0" minWidth="75.0" prefWidth="75.0" />
+            <ColumnConstraints maxWidth="75.0" minWidth="75.0" prefWidth="75.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <children>
+          <TextField fx:id="titleField" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+          <Button layoutX="14.0" layoutY="50.0" minWidth="75.0" mnemonicParsing="false" onAction="#searchButtonAction" text="%button.search" GridPane.columnIndex="1" />
+          <Button fx:id="deleteButton" disable="true" minWidth="75.0" mnemonicParsing="false" onAction="#deleteSelectedAction" text="%button.delete" GridPane.columnIndex="2" />
+          <Button fx:id="addButton" minWidth="75.0" mnemonicParsing="false" onAction="#addButtonAction" text="%button.add" GridPane.columnIndex="3" />
+        </children>
+      </GridPane>
+      <TableView fx:id="resultTable" layoutX="25.0" layoutY="75.0" prefHeight="400.0" prefWidth="450.0">
+        <columns>
+          <TableColumn fx:id="idColumn" maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="%column.id" />
+          <TableColumn fx:id="titleColumn" maxWidth="-1.0" minWidth="175.0" prefWidth="-1.0" text="%column.title" />
+          <TableColumn fx:id="authorsColumn" maxWidth="-1.0" minWidth="225.0" prefWidth="-1.0" text="%column.authors" />
+        </columns>
+      </TableView>
+    </children>
 </AnchorPane>
