@@ -27,6 +27,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -163,7 +164,6 @@ public class BooksSearchController {
                     alert.showAndWait();
                 }
             }
-
         };
         new Thread(deleteBookTask).start();
     }
@@ -177,6 +177,8 @@ public class BooksSearchController {
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/styles.css");
         Stage stage = new Stage();
+        stage.initOwner(mainPane.getScene().getWindow());
+        stage.initModality(Modality.WINDOW_MODAL);
         stage.setTitle("Adding a book");
         stage.setScene(scene);
         stage.showAndWait();
