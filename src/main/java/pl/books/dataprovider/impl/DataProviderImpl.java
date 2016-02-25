@@ -23,22 +23,14 @@ public class DataProviderImpl implements DataProvider {
     @Override
     public Collection<BookVO> findBooksByTitle(String titlePrefix) {
         HttpForm client = null;
-        try {
-            client = new HttpForm(new URI(requestPath + "/services/books/books-by-title"));
-        } catch (URISyntaxException e2) {
-            e2.printStackTrace();
-        }
         Collection<BookVO> books = new ArrayList<BookVO>();
-        client.putFieldValue("titlePrefix", titlePrefix);
         HttpResponse response = null;
         try {
+            client = new HttpForm(new URI(requestPath + "/services/books/books-by-title"));
+            client.putFieldValue("titlePrefix", titlePrefix);
             response = client.doGet();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        try {
             books = Arrays.asList(objectMapper.readValue(response.getData(), BookVO[].class));
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
         return books;
@@ -49,12 +41,8 @@ public class DataProviderImpl implements DataProvider {
         HttpForm client = null;
         try {
             client = new HttpForm(new URI(requestPath + "/services/books/book/" + bookId));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        try {
             client.sendData(HTTP_METHOD.DELETE);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
@@ -62,29 +50,17 @@ public class DataProviderImpl implements DataProvider {
     @Override
     public BookVO addBook(BookVO bookVO) {
         HttpForm client = null;
-        try {
-            client = new HttpForm(new URI(requestPath + "/services/books/book/"));
-        } catch (URISyntaxException e1) {
-            e1.printStackTrace();
-        }
-        String book = null;
-        try {
-            book = objectMapper.writeValueAsString(bookVO);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        client.setContentType("Application/JSON");
         HttpResponse response = null;
-        try {
-            response = client.sendData(HTTP_METHOD.POST, book);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String book = null;
         BookVO responseBook = null;
         try {
+            client = new HttpForm(new URI(requestPath + "/services/books/book/"));
+            book = objectMapper.writeValueAsString(bookVO);
+            client.setContentType("Application/JSON");
+            response = client.sendData(HTTP_METHOD.POST, book);
             responseBook = objectMapper.readValue(response.getData(), BookVO.class);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | URISyntaxException e1) {
+            e1.printStackTrace();
         }
         return responseBook;
     }
