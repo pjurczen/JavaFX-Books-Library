@@ -156,7 +156,7 @@ public class BooksSearchController {
         Task<Collection<BookVO>> searchTask = new Task<Collection<BookVO>>() {
             @Override
             protected Collection<BookVO> call() throws Exception {
-                return dataProvider.findBooksByTitle(model.getTitle());
+                return dataProvider.findBooksByTitle("");
             }
 
             @Override
