@@ -70,4 +70,6 @@ public class BookVO {
             return false;
         return true;
     }
+    
+    
 }

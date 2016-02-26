@@ -11,6 +11,8 @@ import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -67,16 +69,42 @@ public class BooksSearchController {
     
     @FXML
     private AnchorPane mainPane;
-    
 
     @FXML
     private void initialize() {
         initializeResultTable();
         titleField.textProperty().bindBidirectional(model.titleProperty());
-        resultTable.itemsProperty().bind(model.resultProperty());
         deleteButton.disableProperty().bind(resultTable.getSelectionModel().selectedItemProperty().isNull());
     }
 
+    @FXML
+    private void searchButtonAction(ActionEvent event) {
+        searchBooks();
+    }
+    
+    @FXML
+    public void deleteSelectedAction() {
+        if (ButtonType.OK.equals(confirmDeletionDialog()))
+            deleteSelectedBook();
+    }
+
+    @FXML
+    public void addButtonAction() throws IOException {
+        String fxmlFile = "/fxml/bookAdd.fxml";
+        String bundlePath = "bundle/bundle";
+        
+        Parent root = FXMLLoader.load(getClass().getResource(fxmlFile), ResourceBundle.getBundle(bundlePath));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add("/styles/styles.css");
+        Stage stage = new Stage();
+        stage.initOwner(mainPane.getScene().getWindow());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle("Adding a book");
+        stage.setScene(scene);
+        stage.showAndWait();
+        searchBooks();
+    }
+    
     private void initializeResultTable() {
         idColumn.setCellValueFactory(cellData -> new ReadOnlyLongWrapper(cellData.getValue().getId()));
 
@@ -101,15 +129,30 @@ public class BooksSearchController {
         });
         
         resultTable.setPlaceholder(new Label(resources.getString("table.emptyText")));
-    }
+        
+        FilteredList<BookVO> filteredData = new FilteredList<>(model.resultProperty(), b -> true);
 
-    @FXML
-    private void searchButtonAction(ActionEvent event) {
-        searchBooks();
+        titleField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(book -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (book.getTitle().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
+        
+        SortedList<BookVO> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(resultTable.comparatorProperty());
+        resultTable.setItems(sortedData);
     }
 
     private void searchBooks() {
-
         Task<Collection<BookVO>> searchTask = new Task<Collection<BookVO>>() {
             @Override
             protected Collection<BookVO> call() throws Exception {
@@ -123,12 +166,6 @@ public class BooksSearchController {
             }
         };
         new Thread(searchTask).start();
-    }
-
-    @FXML
-    public void deleteSelectedAction() {
-        if (ButtonType.OK.equals(confirmDeletionDialog()))
-            deleteSelectedBook();
     }
 
     private ButtonType confirmDeletionDialog() {
@@ -166,22 +203,5 @@ public class BooksSearchController {
             }
         };
         new Thread(deleteBookTask).start();
-    }
-
-    @FXML
-    public void addButtonAction() throws IOException {
-        String fxmlFile = "/fxml/bookAdd.fxml";
-        String bundlePath = "bundle/bundle";
-        
-        Parent root = FXMLLoader.load(getClass().getResource(fxmlFile), ResourceBundle.getBundle(bundlePath));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/styles.css");
-        Stage stage = new Stage();
-        stage.initOwner(mainPane.getScene().getWindow());
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setTitle("Adding a book");
-        stage.setScene(scene);
-        stage.showAndWait();
-        searchBooks();
     }
 }
