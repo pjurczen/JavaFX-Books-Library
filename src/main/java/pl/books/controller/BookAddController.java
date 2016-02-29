@@ -51,7 +51,7 @@ public class BookAddController {
         newBookTitleField.textProperty().bindBidirectional(model.titleProperty());
         authorsList.itemsProperty().bind(model.authorsListProperty());
         authorRemoveButton.disableProperty().bind(authorsList.getSelectionModel().selectedItemProperty().isNull());
-        submitBookButton.disableProperty().bind(Bindings.isEmpty(model.titleProperty()).or(Bindings.isEmpty(model.getAuthors())));
+        submitBookButton.disableProperty().bind(Bindings.isEmpty(model.titleProperty()).or(Bindings.isEmpty(model.authorsListProperty())));
         initializeAuthorsList();
     }
     

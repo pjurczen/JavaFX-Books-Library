@@ -37,7 +37,7 @@ public class BookAdd {
     }
     
     public ObservableList<AuthorVO> getAuthors() {
-        return authors;
+        return authorsListProperty.get();
     }
     
     public void addAuthor(AuthorVO value) {
