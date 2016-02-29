@@ -86,7 +86,7 @@ public class BookAddController {
 
     @FXML
     public void cancelAction() {
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        Stage stage = (Stage) mainPane.getScene().getWindow();
         stage.close();
     }
 
